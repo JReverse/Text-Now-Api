@@ -32,8 +32,6 @@ namespace TextNow
 
         public Dictionary<string, string> Param { get; set; } = new Dictionary<string, string>();
         public MultipartFormDataContent MultiParam { get; set; } = new MultipartFormDataContent();
-        public bool RetryOnRatelimit { get; private set; } = true;
-
         public void addParam(string key, string value)
         {
             Param.Add(key, value);
@@ -57,9 +55,9 @@ namespace TextNow
             return Param;
         }
 
-        public TextNowHttpClient(TextNowClient snapchatClient)
+        public TextNowHttpClient(TextNowClient textnowClient)
         {
-            _textnowClient = snapchatClient;
+            _textnowClient = textnowClient;
         }
 
         public async Task<HttpResponseMessage> Send(string endpoint, string method)
@@ -86,6 +84,10 @@ namespace TextNow
                 HttpResponseMessage response = null;
                 try
                 {
+                    webClient.DefaultRequestHeaders.TryAddWithoutValidation("x-emb-st", _textnowClient.Signer.GetEmbyST());
+                    webClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TN-Integrity-Session", _textnowClient.Signer.GetIntegritySession());
+                    webClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "TextNow/21.8.0 (iPhone7,2; iOS 12.4.8; Scale/2.00)");
+                    webClient.DefaultRequestHeaders.TryAddWithoutValidation("x-emb-id", _textnowClient.Signer.GetEmbyID(32));
                     var content = new FormUrlEncodedContent(getParams());
                     if (method == "PUT")
                     {
@@ -102,12 +104,9 @@ namespace TextNow
                     ClearParams();
                     return response;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    if (RetryOnRatelimit)
-                        Thread.Sleep(10000);
-                    else
-                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Failed", Encoding.UTF8, "text/plain") };
+                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Failed", Encoding.UTF8, "text/plain") };
                 }
             }
         }
