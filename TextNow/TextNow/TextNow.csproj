@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\bonus_info.cs" />
+    <Compile Include="Extensions\ios_bonus_data_v1.cs" />
+    <Compile Include="Extensions\TNTOKEN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="REST\HTTP\TextNowHttpClient.cs" />
     <Compile Include="REST\Registration\Register.cs" />

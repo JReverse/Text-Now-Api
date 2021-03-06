@@ -14,12 +14,14 @@ namespace TextNow
         public string app_version { get; set; } = "21.8.0";
         public string device_id { get; set; } = Guid.NewGuid().ToString();
         public string os_version { get; set; } = "12.4.8";
+        public string IntegritySession { get; set; }
         public Sign Signer { get; private set; }
         public TextNowHttpClient HttpClient { get; private set; }
         public TextNowClient()
         {
             HttpClient = new TextNowHttpClient(this);
             Signer = new Sign(this);
+            IntegritySession = Signer.GetIntegritySession();
         }
 
 
@@ -28,12 +30,14 @@ namespace TextNow
             HttpClient = new TextNowHttpClient(this);
             Signer = new Sign(this);
             Proxy = proxy;
+            IntegritySession = Signer.GetIntegritySession();
         }
 
         public TextNowClient(bool userpassproxy, string proxy, string proxyuser, string proxypass)
         {
             HttpClient = new TextNowHttpClient(this);
             Signer = new Sign(this);
+            IntegritySession = Signer.GetIntegritySession();
             Proxy = proxy;
             if (userpassproxy)
             {

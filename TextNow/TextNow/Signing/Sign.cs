@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TextNow
 {
@@ -18,12 +21,6 @@ namespace TextNow
             _textnowClient = textnowClient;
         }
 
-        public string Base64Encode(string plainText)
-        {
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            return Convert.ToBase64String(plainTextBytes);
-        }
-
         public string GetEmbyST()
         {
             return rnd.Next(1000000000, 1999999999).ToString();
@@ -35,26 +32,10 @@ namespace TextNow
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
         public string GetIntegritySession()
         {
-            Dictionary<string, string> Algro = new Dictionary<string, string>
-            {
-                                 { "alg", "HS256" },
-                                 { "typ", "JWT" },
-            };
-            Dictionary<string, object> DeviceParams = new Dictionary<string, object>
-            {
-                                 { "device_attested", true },
-                                 { "device_id", Guid.NewGuid().ToString().ToUpper()},
-                                 { "eligible_for_ads", true },
-                                 { "exp",  rnd.Next(1000000000, 1999999999) },
-                                 { "iat", rnd.Next(1000000000, 1999999999) },
-                                 { "iss", "tn-integrity-service" },
-                                 { "sub", "tn-integrity-service"},
-            };
-
-            return Base64Encode(JsonConvert.SerializeObject(Algro) + JsonConvert.SerializeObject(DeviceParams) + "3R3yMtpa~ie˟(6#");
+            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfYXR0ZXN0ZWQiOnRydWUsImRldmljZV9pZCI6IjAwRDEyNjU5LUYxMkUtNEM3Qy1BRkYxLUI5MjRDMzM3MkJBRSIsImVsaWdpYmxlX2Zvcl9hZHMiOnRydWUsImV4cCI6MTYxNTE2MzcwMCwiaWF0IjoxNjE0OTkwOTAwLCJpc3MiOiJ0bi1pbnRlZ3JpdHktc2VydmljZSIsInN1YiI6InRuLWludGVncml0eS1zZXNzaW9uIn0.oOIIFKY-_DUGOlNjJow3vwqy81fSmk5M1ivJNspyBGU";
         }
-
     }
 }
