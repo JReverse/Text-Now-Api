@@ -16,8 +16,8 @@ namespace TextNow
             Dictionary<string, object> step = new Dictionary<string, object>
             {
                                  { "bonus_info", new BonusInfo() },
-                                 { "email", "hhhhhhh@snap.tf" },
-                                 { "password", "hhhhh" },
+                                 { "email", email },
+                                 { "password", password },
                                  { "system_version", "12.4.8" },
 
             };
